@@ -1,0 +1,23 @@
+#This function converts original zone time to target zone time. Needs three parameters which are original time, original time zone and traget zone
+
+def convert_timezone(original_time, original_zone, target_zone):
+    #datetime.striptime is a method provided by the 'datetime'module in Python.
+    #It's used to parse a string representing a date and/or time into a 'datetime' object.
+    original_time = datetime.strptime(time_str, '%Y:%m:%d %H:%M') #This is the format string, and it tells the 'striptime' method how to parse the 'time_str'string. Each specifier corresponds to a specific part of the date and time
+
+    #Setting the original timezone
+    original_tz=pytz.timezone(original_zone)
+    local_time=original_tz.localize(original_time)
+
+    #Converting to the target timezone
+    target_tz=pytz.timezone(target_zone)
+    target_time=local_time.astimezone(target_tz)
+
+    return target_time
+
+original_zone='Asia/Seoul'
+target_zone='America/Los_angeles'
+time_str=input("Enter the time to convert (YYYY:MM:DD HH:MM format): ")
+
+converted_time = convert_timezone(time_str, original_zone, target_zone)
+print(f"The USA time : {target_zone} = South Korea time : {converted_time.strftime('%Y-%m-%d  %H:%M')}")
