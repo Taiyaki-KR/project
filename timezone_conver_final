@@ -1,0 +1,46 @@
+import tkinter as tk
+from tkinter import simpledialog, messagebox
+import pytz
+from datetime import datetime
+#This function converts original zone time to target zone time. Needs three parameters which are original time, original time zone and traget zone
+
+def convert_timezone(time_str, original_zone, target_zone):
+    #datetime.striptime is a method provided by the 'datetime'module in Python.
+    #It's used to parse a string representing a date and/or time into a 'datetime' object.
+    original_time = datetime.strptime(time_str, '%Y:%m:%d %H:%M') #This is the format string, and it tells the 'striptime' method how to parse the 'time_str'string. Each specifier corresponds to a specific part of the date and time
+
+    #Setting the original timezone
+    original_tz=pytz.timezone(original_zone)
+    local_time=original_tz.localize(original_time)
+
+    #Converting to the target timezone
+    target_tz=pytz.timezone(target_zone)
+    target_time=local_time.astimezone(target_tz)
+
+    return target_time
+
+original_zone='Asia/Seoul'
+target_zone='America/Los_angeles'
+
+def ask_for_time():
+    #Create a root window
+    ROOT = tk.Tk()
+    ROOT.withdraw()
+
+    time_str=simpledialog.askstring(title = "Time convert", prompt = "Enter the exam time : (YYYY:MM:DD HH:MM format): ")
+
+    if time_str:
+        try:
+            original_zone = 'Asia/Seoul'
+            target_zone = 'America/Los_Angeles'
+            converted_time = convert_timezone(time_str, original_zone, target_zone)
+            message = f"Test will be held in {target_zone}, {converted_time.strftime('%Y-%m-%d %H:%M')}"
+            tk.messagebox.showinfo("Conversion Result", message)
+        except ValueError as e:
+            tk.messagebox.showerror("Error", "Invalid date-time format. Please use YYYY:MM:DD HH:MM format.")
+    else:
+        tk.messagebox.showinfo("Cancelled", "Operation cancelled by user.")
+
+    ROOT.destroy()
+
+ask_for_time()
